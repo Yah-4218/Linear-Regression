@@ -1,8 +1,12 @@
 '''
 Mark II of the Linear Regression Model. 
 Implementing Linear Regression using Object Oriented Programming rather than Procedural.
+Reason: Because the everything is self contained and no more use of global variables to ensure code safety.
 
-Why? Because the everything is self contained and no more use of global variables to ensure code safety.
+Using Mean Squared Error instead of Sum of Squared Residuals
+Reason: Prevents incredibly high Loss values when the number of observations increases
+
+
 '''
 
 import numpy as np
@@ -17,13 +21,13 @@ class Linear_Regression():
     xAxis: np.array
     yAxis: np.array 
     ARRAY_SIZE: int
-        Number of coordinates in xAxis and yAxis
+        Number of observations. Also called 'N'
     predictedY: np.array 
         Also called 'ŷ'
     gradient: float
         Also called 'm'
     bias: float
-        Y-intercept parameter. ALso called 'b'
+        Y-intercept parameter. Also called 'b'
     Loss: float
         The sum of squared residuals calculated from the loss function
     Epochs: int
@@ -67,8 +71,6 @@ class Linear_Regression():
         self.derivativeGradient = 0
         self.derivativeBias = 0
 
-        self.TrainModel()
-
     def __str__(self):
         return(f"X Axis: {self.xAxis}\nY Axis: {self.yAxis}\nPredicted Y: {self.predictedY}\nGradient: {self.gradient}\nBias: {self.bias}\nLoss: {self.loss}\ndL/dm: {self.derivativeGradient}\ndL/db: {self.derivativeBias}")
 
@@ -91,12 +93,16 @@ class Linear_Regression():
         self.derivativeGradient = 0
         for i in range(self.ARRAY_SIZE):
             self.derivativeGradient += 2 * self.xAxis[i] * (self.predictedY[i] - self.yAxis[i])
-        # Calculate dL/dm
+        self.derivativeGradient = self.derivativeGradient/self.ARRAY_SIZE
+        
+        # Calculate (dL/dm)/N
     
         self.derivativeBias = 0
         for i in range(self.ARRAY_SIZE):
             self.derivativeBias += 2 * (self.predictedY[i] - self.yAxis[i])
-        # Calculate dL/db
+        self.derivativeBias = self.derivativeBias/self.ARRAY_SIZE
+
+        # Calculate (dL/db)/N
 
         self.gradient = self.gradient - self.derivativeGradient * self.learningRate
         # m = m - (dL/dm * α) 
@@ -108,6 +114,8 @@ class Linear_Regression():
         self.loss = 0
         for i in range(self.ARRAY_SIZE):
             self.loss += (self.predictedY[i] - self.yAxis[i])**2
+
+        self.loss = self.loss/self.ARRAY_SIZE
 
         return self.loss
 
@@ -148,15 +156,17 @@ class RegressionGraph():
 
 def main():
     ARRAY_SIZE = 8
-    xAxis = np.array([i for i in range(0,ARRAY_SIZE)])
+    xAxis = np.array([i for i in range(ARRAY_SIZE)])
     yAxis = np.array([])
     for i in range(ARRAY_SIZE):
-        value = round(np.random.uniform(0,10),3)
+        # value = round(np.random.uniform(0,10),3)
+        value = np.array(202*xAxis[i])
         yAxis = np.append(yAxis, value)
 
     # yAxis = np.array([1,4,7,10,13,16,19,22])
 
     model = Linear_Regression(xAxis, yAxis, epochs=1000, learningRate=0.001)
+    model.TrainModel()
     print(model)
     RegressionGraph(model, "regression")
 
