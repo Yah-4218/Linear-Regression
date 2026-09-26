@@ -27,7 +27,7 @@ class Linear_Regression():
     bias: float
         Y-intercept parameter. Also called 'b'
     Loss: float
-        The sum of squared residuals calculated from the loss function
+        The mean squared error calculated from the loss function
     Epochs: int
     learningRate: float 
         Also called 'α'
@@ -50,7 +50,7 @@ class Linear_Regression():
         m = m - dL/dm*α
         b = b - dL/db*α
     LossFunction(self)
-        Calculates Loss by Sum of Squared Residuals
+        Calculates Loss by Mean Squared Error
     '''
     def __init__(self, xAxis, yAxis, epochs = 100, learningRate = 0.001):
         self.xAxis = xAxis
