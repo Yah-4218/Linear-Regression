@@ -5,8 +5,6 @@ Reason: Because the everything is self contained and no more use of global varia
 
 Using Mean Squared Error instead of Sum of Squared Residuals
 Reason: Prevents incredibly high Loss values when the number of observations increases
-
-
 '''
 
 import numpy as np
@@ -155,6 +153,7 @@ class RegressionGraph():
 
 
 def main():
+
     ARRAY_SIZE = 8
     xAxis = np.array([i for i in range(ARRAY_SIZE)])
     yAxis = np.array([])
