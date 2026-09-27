@@ -8,6 +8,7 @@ Reason: np functions seem to be faster for np.arrays. See testV3.py for more det
 
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 class Linear_Regression():
     '''
@@ -65,7 +66,7 @@ class Linear_Regression():
         self.epochs = epochs
         self.learningRate = learningRate
 
-        self.derivativeGradient = 0
+        self.derivativeGradient = np.random.standard_normal()
         self.derivativeBias = 0
 
     def __str__(self):
@@ -75,15 +76,27 @@ class Linear_Regression():
     def TrainModel(self):
         for i in range(self.epochs):
             self.ForwardPropagation()
-            self.LossFunction()
+            newLoss = self.LossFunction()
             self.BackPropagation()
 
+            if i == 0:
+                self.loss = newLoss
+                continue
+            
+            oldLoss = self.loss
+            if newLoss > oldLoss:
+                print(f"Training finished on Epoch {i}")
+                print(f"newLoss: {newLoss}, oldLoss: {oldLoss}")
+                break; 
+            self.loss = newLoss
+
+
+            
 
     def ForwardPropagation(self):
         self.predictedY= np.zeros(self.ARRAY_SIZE)
         for i in range(self.ARRAY_SIZE):
             self.predictedY[i] = self.gradient*self.xAxis[i] + self.bias
-
 
 
     def BackPropagation(self):
@@ -108,13 +121,13 @@ class Linear_Regression():
     
 
     def LossFunction(self):
-        self.loss = 0
+        loss = 0
         for i in range(self.ARRAY_SIZE):
-            self.loss += (self.predictedY[i] - self.yAxis[i])**2
+            loss += (self.predictedY[i] - self.yAxis[i])**2
 
-        self.loss = self.loss/self.ARRAY_SIZE
+        loss = loss/self.ARRAY_SIZE
 
-        return self.loss
+        return loss
 
     
 class RegressionGraph():
@@ -158,13 +171,10 @@ def main():
     xAxis = np.array([i for i in range(ARRAY_SIZE)])
     yAxis = np.array([])
     for i in range(ARRAY_SIZE):
-        # value = round(np.random.uniform(0,10),3)
-        value = np.array(202*xAxis[i])
+        value = 202*xAxis[i] + 2
         yAxis = np.append(yAxis, value)
 
-    # yAxis = np.array([1,4,7,10,13,16,19,22])
-
-    model = Linear_Regression(xAxis, yAxis, epochs=1000, learningRate=0.001)
+    model = Linear_Regression(xAxis, yAxis, epochs=10_000, learningRate=0.001)
     model.TrainModel()
     print(model)
     RegressionGraph(model, "regression")
