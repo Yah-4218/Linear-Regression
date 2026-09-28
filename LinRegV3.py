@@ -52,7 +52,7 @@ class Linear_Regression():
     LossFunction(self)
         Calculates Loss by Mean Squared Error
     '''
-    def __init__(self, xAxis, yAxis, epochs = 100, learningRate = 0.001):
+    def __init__(self, xAxis, yAxis, epochs = 1_000, learningRate = 0.001):
         self.xAxis = xAxis
         self.yAxis = yAxis
         # Need getters and setters for these two
@@ -66,14 +66,17 @@ class Linear_Regression():
         self.epochs = epochs
         self.learningRate = learningRate
 
-        self.derivativeGradient = np.random.standard_normal()
-        self.derivativeBias = 0
+        self.derivativeGradient = 0.0
+        self.derivativeBias = 0.0
 
     def __str__(self):
         return(f"X Axis: {self.xAxis}\nY Axis: {self.yAxis}\nPredicted Y: {self.predictedY}\nGradient: {self.gradient}\nBias: {self.bias}\nLoss: {self.loss}\ndL/dm: {self.derivativeGradient}\ndL/db: {self.derivativeBias}")
 
 
     def TrainModel(self):
+        '''
+        Trains Model by iterating Forward Propogation, Loss Function and Back Propogation for epoch iterations until Loss increases
+        '''
         for i in range(self.epochs):
             self.ForwardPropagation()
             newLoss = self.LossFunction()
@@ -89,27 +92,19 @@ class Linear_Regression():
                 print(f"newLoss: {newLoss}, oldLoss: {oldLoss}")
                 break; 
             self.loss = newLoss
-
-
             
 
     def ForwardPropagation(self):
-        self.predictedY= np.zeros(self.ARRAY_SIZE)
-        for i in range(self.ARRAY_SIZE):
-            self.predictedY[i] = self.gradient*self.xAxis[i] + self.bias
+        self.predictedY= self.gradient * self.xAxis + self.bias
 
 
     def BackPropagation(self):
-        self.derivativeGradient = 0
-        for i in range(self.ARRAY_SIZE):
-            self.derivativeGradient += 2 * self.xAxis[i] * (self.predictedY[i] - self.yAxis[i])
+        self.derivativeGradient = np.sum(2*self.xAxis * (self.predictedY - self.yAxis))
         self.derivativeGradient = self.derivativeGradient/self.ARRAY_SIZE
         
         # Calculate (dL/dm)/N
     
-        self.derivativeBias = 0
-        for i in range(self.ARRAY_SIZE):
-            self.derivativeBias += 2 * (self.predictedY[i] - self.yAxis[i])
+        self.derivativeBias = np.sum(2*(self.predictedY - self.yAxis))
         self.derivativeBias = self.derivativeBias/self.ARRAY_SIZE
 
         # Calculate (dL/db)/N
@@ -121,12 +116,9 @@ class Linear_Regression():
     
 
     def LossFunction(self):
-        loss = 0
-        for i in range(self.ARRAY_SIZE):
-            loss += (self.predictedY[i] - self.yAxis[i])**2
-
+        loss = np.sum((self.predictedY - self.yAxis)**2)
         loss = loss/self.ARRAY_SIZE
-
+        # Mean Squared Error
         return loss
 
     
@@ -171,7 +163,7 @@ def main():
     xAxis = np.array([i for i in range(ARRAY_SIZE)])
     yAxis = np.array([])
     for i in range(ARRAY_SIZE):
-        value = 202*xAxis[i] + 2
+        value = np.random.random()
         yAxis = np.append(yAxis, value)
 
     model = Linear_Regression(xAxis, yAxis, epochs=10_000, learningRate=0.001)
