@@ -8,7 +8,7 @@ def main():
     V2_times = []
     V3_times = []
 
-    ARRAY_SIZE = 100
+    ARRAY_SIZE = 15
     xAxis = np.array([i for i in range(ARRAY_SIZE)])
     yAxis = np.array([])
     for i in range(ARRAY_SIZE):
