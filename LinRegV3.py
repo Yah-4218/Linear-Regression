@@ -154,11 +154,12 @@ class RegressionGraph():
 
 def main():
 
-    ARRAY_SIZE = 20
+    ARRAY_SIZE = 100
     xAxis = np.array([i for i in range(ARRAY_SIZE)])
     yAxis = np.array([])
     for i in range(ARRAY_SIZE):
-        value = np.random.random()
+        # value = np.random.random()
+        value = np.array(20*xAxis[i]+2)
         yAxis = np.append(yAxis, value)
 
     model = Linear_Regression(xAxis, yAxis, epochs=10_000, learningRate=0.001)
